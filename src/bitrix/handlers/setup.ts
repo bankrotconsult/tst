@@ -1,4 +1,4 @@
-import { registerConnector } from '../bitrix/connector/register'
+import { registerConnector } from '../connector/register'
 
 export async function handleSetupRegister(_req: Request): Promise<Response> {
 	try {

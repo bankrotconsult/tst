@@ -1,5 +1,5 @@
 import { B24OAuth } from '@bitrix24/b24jssdk'
-import { config } from '../config'
+import { config } from '../../config'
 import { loadTokens, saveTokens } from './storage'
 
 export async function createB24Client(): Promise<B24OAuth> {

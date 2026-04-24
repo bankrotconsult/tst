@@ -8,17 +8,15 @@ export async function logRequest(req: Request): Promise<void> {
 	const contentType = req.headers.get('content-type') ?? ''
 
 	try {
-		if (contentType.includes('application/json')) {
-			body = await req.clone().json()
-		} else if (
-			contentType.includes('application/x-www-form-urlencoded') ||
-			contentType.includes('multipart/form-data')
-		) {
-			const form = await req.clone().formData()
-			body = Object.fromEntries(form)
-		} else {
-			const text = await req.clone().text()
-			if (text) body = text
+		const text = await req.clone().text()
+		if (text) {
+			if (contentType.includes('application/json')) {
+				body = JSON.parse(text)
+			} else if (contentType.includes('application/x-www-form-urlencoded')) {
+				body = Object.fromEntries(new URLSearchParams(text))
+			} else {
+				body = text
+			}
 		}
 	} catch {
 		body = '<unreadable>'

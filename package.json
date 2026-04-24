@@ -18,6 +18,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@bitrix24/b24jssdk": "^1.0.5"
+    "@bitrix24/b24jssdk": "^1.0.5",
+    "matrix-js-sdk": "^41.4.0-rc.0"
   }
 }
