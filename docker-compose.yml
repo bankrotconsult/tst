@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:8007:8007"
     volumes:
       - ./volumes/bk-chat-node:/app/data
     networks:

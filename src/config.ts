@@ -1,5 +1,5 @@
 export const config = {
-	port: parseInt(process.env.PORT ?? '3000'),
+	port: parseInt(process.env.PORT ?? '8007'),
 
 	bitrix: {
 		domain: 'b24-tq8b7v.bitrix24.ru',
