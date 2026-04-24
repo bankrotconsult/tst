@@ -12,8 +12,12 @@ services:
       - ./volumes/bk-chat-node:/app/data
     networks:
       - bankrot_shared
+      - bk_chat_net
 
 networks:
   bankrot_shared:
     external: true
     name: bk-backend_backend
+  bk_chat_net:
+    external: true
+    name: bk_chat_net
