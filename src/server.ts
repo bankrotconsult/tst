@@ -17,9 +17,9 @@ export function startServer(): void {
 	Bun.serve({
 		port: config.port,
 		routes: {
-			'/install': { POST: withLogging(handleInstall) },
+			'/dialog/install': { POST: withLogging(handleInstall) },
 			'/dialog/bitrix/handler/': { POST: withLogging(handleWebhook) },
-			'/setup/register': { POST: withLogging(handleSetupRegister) },
+			'/dialog/setup/register': { POST: withLogging(handleSetupRegister) },
 		},
 		async fetch(req) {
 			await logRequest(req)
