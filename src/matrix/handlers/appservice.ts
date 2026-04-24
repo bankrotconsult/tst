@@ -20,7 +20,10 @@ function pushToSocket(ws: { send: (data: string) => void } | undefined, payload:
 // PUT /dialog/_matrix/app/v1/transactions/:txnId
 // Synapse pushes room events here; we forward them to open WebSocket connections.
 export async function handleTransaction(req: Request): Promise<Response> {
-	if (!verifyHsToken(req)) return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	if (!verifyHsToken(req)) {
+		console.warn(`[appservice] unauthorized request from ${req.headers.get('x-forwarded-for') ?? 'unknown'}`)
+		return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	}
 
 	const txnId = new URL(req.url).pathname.split('/').at(-1) ?? ''
 	if (processedTxns.has(txnId)) return Response.json({})
@@ -61,12 +64,18 @@ export async function handleTransaction(req: Request): Promise<Response> {
 
 // GET /dialog/_matrix/app/v1/users/:userId
 export function handleAsUser(req: Request): Response {
-	if (!verifyHsToken(req)) return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	if (!verifyHsToken(req)) {
+		console.warn(`[appservice] unauthorized request from ${req.headers.get('x-forwarded-for') ?? 'unknown'}`)
+		return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	}
 	return Response.json({ errcode: 'M_NOT_FOUND' }, { status: 404 })
 }
 
 // GET /dialog/_matrix/app/v1/rooms/:roomAlias
 export function handleAsRoom(req: Request): Response {
-	if (!verifyHsToken(req)) return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	if (!verifyHsToken(req)) {
+		console.warn(`[appservice] unauthorized request from ${req.headers.get('x-forwarded-for') ?? 'unknown'}`)
+		return Response.json({ errcode: 'M_FORBIDDEN' }, { status: 401 })
+	}
 	return Response.json({ errcode: 'M_NOT_FOUND' }, { status: 404 })
 }

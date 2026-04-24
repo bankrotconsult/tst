@@ -17,6 +17,7 @@ function purgeExpired(): void {
 
 export async function handleSessionRegister(req: Request): Promise<Response> {
 	if (!verifyInternalSecret(req)) {
+		console.warn('[session] unauthorized: invalid or missing X-Internal-Secret')
 		return Response.json({ detail: 'Unauthorized' }, { status: 401 })
 	}
 

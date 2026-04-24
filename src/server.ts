@@ -20,10 +20,16 @@ function withMiddleware(handler: Handler): Handler {
 	return async (req) => {
 		if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_HEADERS })
 		await logRequest(req)
-		const res = await handler(req)
-		const headers = new Headers(res.headers)
-		for (const [k, v] of Object.entries(CORS_HEADERS)) headers.set(k, v)
-		return new Response(res.body, { status: res.status, statusText: res.statusText, headers })
+		try {
+			const res = await handler(req)
+			if (!res.ok) console.warn(`[http] ${req.method} ${new URL(req.url).pathname} → ${res.status}`)
+			const headers = new Headers(res.headers)
+			for (const [k, v] of Object.entries(CORS_HEADERS)) headers.set(k, v)
+			return new Response(res.body, { status: res.status, statusText: res.statusText, headers })
+		} catch (err) {
+			console.error(`[http] unhandled error in ${req.method} ${new URL(req.url).pathname}:`, err)
+			return Response.json({ error: 'internal server error' }, { status: 500, headers: CORS_HEADERS })
+		}
 	}
 }
 
