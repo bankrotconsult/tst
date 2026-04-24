@@ -1,0 +1,19 @@
+services:
+
+  bk-chat-node:
+    build: .
+    image: bk-chat-node:latest
+    container_name: bk-chat-node
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./volumes/bk-chat-node:/app/data
+    networks:
+      - bankrot_shared
+
+networks:
+  bankrot_shared:
+    external: true
+    name: bk-backend_backend

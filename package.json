@@ -1,0 +1,23 @@
+{
+  "name": "bk-chat-node",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "start": "bun src/index.ts",
+    "format": "bunx biome format --write src",
+    "lint": "bunx biome lint src",
+    "check": "bunx biome check --write src"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.13",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@bitrix24/b24jssdk": "^1.0.5"
+  }
+}
