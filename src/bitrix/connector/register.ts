@@ -4,7 +4,7 @@ import { config } from '../../config'
 export async function registerConnector(): Promise<void> {
 	const b24 = await createB24Client()
 
-	const result = await b24.actions.v2.call.make({
+	const registerResult = await b24.actions.v2.call.make({
 		method: 'imconnector.register',
 		params: {
 			ID: config.connector.id,
@@ -17,14 +17,20 @@ export async function registerConnector(): Promise<void> {
 			EVENT_BOT_DELETE: config.connector.webhookUrl,
 		},
 	})
-	console.log('[connector] registered:', result.getData())
+	if (!registerResult.isSuccess) {
+		throw new Error(`imconnector.register failed: ${registerResult.getErrorMessages().join('; ')}`)
+	}
+	console.log('[connector] registered:', registerResult.getData())
 
-	await b24.actions.v2.call.make({
+	const bindResult = await b24.actions.v2.call.make({
 		method: 'event.bind',
 		params: {
 			event: 'OnImConnectorMessageAdd',
 			handler: config.connector.webhookUrl,
 		},
 	})
+	if (!bindResult.isSuccess) {
+		throw new Error(`event.bind failed: ${bindResult.getErrorMessages().join('; ')}`)
+	}
 	console.log('[connector] event.bind registered')
 }
