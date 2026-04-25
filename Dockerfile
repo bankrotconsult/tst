@@ -7,6 +7,7 @@ FROM oven/bun:1
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY src/ ./src/
+COPY assets/ ./assets/
 COPY package.json ./
 RUN mkdir -p data
 

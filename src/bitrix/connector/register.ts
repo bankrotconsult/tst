@@ -1,8 +1,15 @@
 import { createB24Client } from '../auth/client'
 import { config } from '../../config'
 
+async function loadIconBase64(): Promise<string> {
+	const file = Bun.file(new URL('../../../assets/connector-icon.png', import.meta.url))
+	const buffer = await file.arrayBuffer()
+	return Buffer.from(buffer).toString('base64')
+}
+
 export async function registerConnector(): Promise<void> {
 	const b24 = await createB24Client()
+	const iconBase64 = await loadIconBase64()
 
 	const registerResult = await b24.actions.v2.call.make({
 		method: 'imconnector.register',
@@ -10,6 +17,7 @@ export async function registerConnector(): Promise<void> {
 			ID: config.connector.id,
 			NAME: config.connector.name,
 			ICON_COLOR: config.connector.color,
+			ICON_FILE: ['connector-icon.png', iconBase64],
 			PLACEMENT_HANDLER: config.connector.webhookUrl,
 			SEND: config.connector.webhookUrl,
 			EVENT_MESSAGE_ADD: config.connector.webhookUrl,
