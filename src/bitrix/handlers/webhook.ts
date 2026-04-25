@@ -1,7 +1,7 @@
 import { createB24Client } from '../auth/client'
 import { config } from '../../config'
 import { activateConnector } from '../connector/activate'
-import { setLineId, lineId } from '../../socket/state'
+import { setLineId, lineId, wsClients, wsAdmins, adminWatching } from '../../socket/state'
 
 type BitrixEvent = {
 	event?: string
@@ -46,6 +46,17 @@ async function handleMessageAdd(data: Record<string, any>): Promise<void> {
 
 	for (const msg of messages) {
 		console.log('[webhook] message from Bitrix operator:', msg)
+
+		const clientId = msg.connector?.user_id as string | undefined
+		const text = (msg.message?.text ?? '') as string
+
+		if (clientId && text) {
+			const payload = JSON.stringify({ text, sender: 'operator', createdAt: Date.now() })
+			wsClients.get(clientId)?.send(payload)
+			for (const [adminId, watchedId] of adminWatching) {
+				if (watchedId === clientId) wsAdmins.get(adminId)?.send(payload)
+			}
+		}
 
 		try {
 			await b24.actions.v2.call.make({

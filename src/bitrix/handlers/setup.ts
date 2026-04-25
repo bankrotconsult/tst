@@ -1,6 +1,6 @@
 import { registerConnector } from '../connector/register'
 
-export async function handleSetupRegister(_req: Request): Promise<Response> {
+export async function handleSetupRegister(): Promise<Response> {
 	try {
 		await registerConnector()
 		return Response.json({ ok: true })

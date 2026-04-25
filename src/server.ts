@@ -35,6 +35,7 @@ function withMiddleware(handler: Handler): Handler {
 
 export async function startServer(): Promise<void> {
 	await loadClientRooms()
+	await handleSetupRegister()
 
 	Bun.serve({
 		port: config.port,
@@ -42,7 +43,6 @@ export async function startServer(): Promise<void> {
 			// Bitrix24
 			'/dialog/install': { POST: withMiddleware(handleInstall) },
 			'/dialog/bitrix/handler/': { POST: withMiddleware(handleWebhook) },
-			'/dialog/setup/register': { POST: withMiddleware(handleSetupRegister) },
 
 			// Matrix Application Service
 			'/dialog/_matrix/app/v1/transactions/:txnId': { PUT: withMiddleware(handleTransaction) },

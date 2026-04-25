@@ -1,6 +1,7 @@
 import { MsgType, type IRoomEvent } from 'matrix-js-sdk'
 import { matrixConfig } from '../config'
-import { clientRooms, processedTxns, wsAdmins, wsClients, adminWatching } from '../../socket/state'
+import { clientRooms, processedTxns, wsAdmins, wsClients, adminWatching, lineId } from '../../socket/state'
+import { sendMessage as sendBitrixMessage } from '../../bitrix/connector/message'
 
 function verifyHsToken(req: Request): boolean {
 	const auth = req.headers.get('authorization') ?? ''
@@ -41,6 +42,13 @@ export async function handleTransaction(req: Request): Promise<Response> {
 
 		const clientId = [...clientRooms.entries()].find(([, rid]) => rid === roomId)?.[0]
 		if (!clientId) continue
+
+		const senderLocalpart = event.sender.slice(1).split(':')[0]
+		if (senderLocalpart === clientId && lineId) {
+			sendBitrixMessage({ lineId, userId: clientId, userName: clientId, text }).catch((err) =>
+				console.error('[appservice] bitrix send failed:', err)
+			)
+		}
 
 		const payload = {
 			id: event.event_id,
