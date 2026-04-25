@@ -29,15 +29,4 @@ export async function registerConnector(): Promise<void> {
 	}
 	console.log('[connector] registered:', registerResult.getData())
 
-	const bindResult = await b24.actions.v2.call.make({
-		method: 'event.bind',
-		params: {
-			event: 'OnImConnectorMessageAdd',
-			handler: config.connector.webhookUrl,
-		},
-	})
-	if (!bindResult.isSuccess) {
-		throw new Error(`event.bind failed: ${bindResult.getErrorMessages().join('; ')}`)
-	}
-	console.log('[connector] event.bind registered')
 }
