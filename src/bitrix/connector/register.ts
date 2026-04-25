@@ -16,8 +16,7 @@ export async function registerConnector(): Promise<void> {
 		params: {
 			ID: config.connector.id,
 			NAME: config.connector.name,
-			ICON_COLOR: config.connector.color,
-			ICON_FILE: ['connector-icon.png', iconBase64],
+			ICON: { DATA_IMAGE: iconBase64 },
 			PLACEMENT_HANDLER: config.connector.webhookUrl,
 			SEND: config.connector.webhookUrl,
 			EVENT_MESSAGE_ADD: config.connector.webhookUrl,
