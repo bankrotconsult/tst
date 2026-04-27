@@ -41,16 +41,29 @@ export async function startServer(): Promise<void> {
 		port: config.port,
 		routes: {
 			// Bitrix24
-			'/dialog/install': { POST: withMiddleware(handleInstall) },
-			'/dialog/bitrix/handler/': { POST: withMiddleware(handleWebhook) },
+			'/dialog/install': {
+				POST: withMiddleware(handleInstall)
+			},
+			'/dialog/bitrix/handler/': {
+				POST: withMiddleware(handleWebhook)
+			},
 
 			// Matrix Application Service
-			'/dialog/_matrix/app/v1/transactions/:txnId': { PUT: withMiddleware(handleTransaction) },
-			'/dialog/_matrix/app/v1/users/:userId': { GET: withMiddleware(handleAsUser) },
-			'/dialog/_matrix/app/v1/rooms/:roomAlias': { GET: withMiddleware(handleAsRoom) },
+			'/dialog/_matrix/app/v1/transactions/:txnId': {
+				PUT: withMiddleware(handleTransaction)
+			},
+			'/dialog/_matrix/app/v1/users/:userId': {
+				GET: withMiddleware(handleAsUser)
+			},
+			'/dialog/_matrix/app/v1/rooms/:roomAlias': {
+				GET: withMiddleware(handleAsRoom)
+			},
 
 			// Backend internal
-			'/dialog/session/register/': { POST: withMiddleware(handleSessionRegister) },
+			'/dialog/session/register/': {
+				POST: withMiddleware(handleSessionRegister),
+				GET: async () => Response.json({ error: 'wrong method' })
+			},
 		},
 		websocket: websocketHandlers,
 		async fetch(req, server) {
