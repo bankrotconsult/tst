@@ -50,7 +50,7 @@ export async function startServer(): Promise<void> {
 			'/dialog/_matrix/app/v1/rooms/:roomAlias': { GET: withMiddleware(handleAsRoom) },
 
 			// Backend internal
-			'/session/register': { POST: withMiddleware(handleSessionRegister) },
+			'/dialog/session/register/': { POST: withMiddleware(handleSessionRegister) },
 		},
 		websocket: websocketHandlers,
 		async fetch(req, server) {
