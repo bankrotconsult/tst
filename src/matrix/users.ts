@@ -1,5 +1,6 @@
 import { createHmac } from 'node:crypto'
 import { matrixConfig } from './config'
+import { createAsClient, matrixUserId } from './client'
 
 function derivePassword(username: string): string {
 	return createHmac('sha256', matrixConfig.sharedSecret).update(username).digest('hex')
@@ -9,6 +10,11 @@ function makeMac(nonce: string, username: string, password: string, admin: boole
 	const mac = createHmac('sha1', matrixConfig.sharedSecret)
 	mac.update(`${nonce}\x00${username}\x00${password}\x00${admin ? 'admin' : 'notadmin'}`)
 	return mac.digest('hex')
+}
+
+export async function setDisplayName(username: string, displayName: string): Promise<void> {
+	const client = createAsClient(matrixUserId(username))
+	await client.setDisplayName(displayName)
 }
 
 export async function registerUser(username: string, admin = false): Promise<void> {

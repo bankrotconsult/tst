@@ -1,11 +1,13 @@
 import { sessions, type Session } from '../../socket/state'
 import { verifyInternalSecret } from '../auth'
+import { setDisplayName } from '../../matrix/users'
 
 type SessionRequest = {
 	token: string
 	expires_at: number
 	user_id: string
 	role: 'client' | 'admin'
+	first_name?: string
 }
 
 function purgeExpired(): void {
@@ -31,6 +33,12 @@ export async function handleSessionRegister(req: Request): Promise<Response> {
 		expiresAt: body.expires_at,
 	}
 	sessions.set(body.token, session)
+
+	if (body.first_name) {
+		await setDisplayName(body.user_id, body.first_name).catch((err) =>
+			console.warn(`[session] setDisplayName failed for ${body.user_id}:`, err),
+		)
+	}
 
 	console.log(`[session] registered: ${body.user_id} (${body.role})`)
 	return Response.json({ status: 'ok' })
